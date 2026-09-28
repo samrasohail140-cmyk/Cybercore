@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERCORE — Autonomous Neural Systems</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(10, 16, 32, 0.75);
+      --border: rgba(0, 243, 255, 0.35);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #b026ff;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    /* SHINY GLOWING BACKGROUND ELEMENTS */
+    .bg-effects {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* SHINY AMBIENT GLOW ORBS */
+    .glow-orb-1 {
+      position: absolute;
+      top: -10%;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 243, 255, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      filter: blur(80px);
+      animation: floatGlow 8s ease-in-out infinite alternate;
+    }
+
+    .glow-orb-2 {
+      position: absolute;
+      bottom: -10%;
+      right: 15%;
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(176, 38, 255, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      filter: blur(90px);
+      animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+      100% { transform: translate(40px, 50px) scale(1.15); opacity: 1; }
+    }
+
+    /* CYBER GRID BACKGROUND */
+    .cyber-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(to right, rgba(0, 243, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 243, 255, 0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+    }
+
+    /* NAVIGATION BAR */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .brand {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      text-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 120px 60px 40px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* SPLINE 3D BACKGROUND CONTAINER */
+    .spline-bg-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: auto;
+    }
+
+    .spline-bg-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* HERO CONTENT BOX */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 460px;
+      background: rgba(8, 14, 28, 0.82);
+      padding: 32px;
+      border-radius: 20px;
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(0, 243, 255, 0.05);
+      pointer-events: auto;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 12px;
+      background: rgba(0, 243, 255, 0.15);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      color: var(--neon-cyan);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    }
+
+    .hero-text h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .hero-text h1 span {
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.5));
+    }
+
+    .hero-text p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* STATS GRID */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.35);
+    }
+
+    .stat-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    }
+
+    .stat-card p {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* MAIN SECTIONS */
+    section {
+      position: relative;
+      z-index: 3;
+      padding: 100px 60px;
+      min-height: 60vh;
+      border-top: 1px solid var(--border);
+      background: rgba(3, 7, 18, 0.92);
+    }
+
+    .section-header {
+      margin-bottom: 45px;
+      max-width: 700px;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+      transform: translateY(-5px);
+    }
+
+    .card-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      color: var(--neon-purple);
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .card h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    /* FORM STYLING */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .contact-info h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+      margin-bottom: 14px;
+    }
+
+    .contact-info p {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .contact-form {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);
+    }
+
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 16px;
+      background: rgba(3, 7, 18, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .contact-form input:focus, .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    }
+
+    .contact-form button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+      transition: 0.3s;
+    }
+
+    .contact-form button:hover {
+      box-shadow: 0 0 30px rgba(176, 38, 255, 0.7);
+    }
+
+    footer {
+      position: relative;
+      z-index: 3;
+      padding: 30px 60px;
+      background: rgba(3, 7, 18, 0.95);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND SHINY AMBIENT & GRID EFFECTS -->
+  <div class="bg-effects">
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+    <div class="cyber-grid"></div>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <nav>
+    <a href="#overview" class="brand">CYBERCORE</a>
+    <ul class="nav-links">
+      <li><a href="#overview" class="active">Overview</a></li>
+      <li><a href="#lab">R&D Lab</a></li>
+      <li><a href="#fleet">Robot Fleet</a></li>
+      <li><a href="#spatial">Spatial AI</a></li>
+      <li><a href="#contact">Deploy Agent</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION WITH BACKGROUND 3D ROBOT -->
+  <div class="hero" id="overview">
+    
+    <!-- BACKGROUND SPLINE 3D IFRAME -->
+    <div class="spline-bg-container">
+      <iframe src="https://my.spline.design/3drobotheadtrackingmouse-YhqY5VALBxefk5wUhuJ0NikY/" frameborder="0"></iframe>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="tag">NEXT-GEN AUTONOMOUS KINETICS</div>
+        <h1>Autonomous <span>Neural Robotics</span></h1>
+        <p>Cybercore engineers next-generation cybernetic units powered by real-time neural processing, quantum-inspired motion algorithms, and adaptive spatial intelligence.</p>
+
+        <div class="stats">
+          <div class="stat-card">
+            <h3>99.99%</h3>
+            <p>Kinetic Precision</p>
+          </div>
+          <div class="stat-card">
+            <h3>0.001s</h3>
+            <p>Neural Latency</p>
+          </div>
+          <div class="stat-card">
+            <h3>828 TOPS</h3>
+            <p>Edge AI Compute</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- R&D LAB SECTION -->
+  <section id="lab">
+    <div class="section-header">
+      <h2 class="section-title">Cybernetics R&D Lab</h2>
+      <p class="section-subtitle">Pushing the boundaries of hardware-software convergence through neural motor architectures and self-learning spatial perception models.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div>
+          <span class="card-tag">PERCEPTION MODULE</span>
+          <h3>Sub-Millimeter LiDAR Spatial Mapping</h3>
+          <p>Real-time point-cloud environment reconstruction utilizing multi-spectral infrared arrays and adaptive ray-tracing models for absolute spatial clarity.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">ACTUATION MATRIX</span>
+          <h3>Quantum Motion Servo Actuators</h3>
+          <p>Ultra-responsive magnetic flux micro-servos providing fluid articulation, micro-vibration damping, and dynamic load balancing under extreme environments.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">NEURAL BACKBONE</span>
+          <h3>Edge Matrix Processing Engine</h3>
+          <p>Autonomous neural computation executing over 1000 spatial calculations per second locally without relying on high-latency cloud architectures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBOT FLEET SECTION -->
+  <section id="fleet">
+    <div class="section-header">
+      <h2 class="section-title">Active Cybernetic Units</h2>
+      <p class="section-subtitle">Versatile, autonomous robotics platforms customized for industrial precision, medical operations, and hazardous tactical environments.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div>
+          <span class="card-tag">TACTICAL AGENT</span>
+          <h3>SENTINEL-X Alpha</h3>
+          <p>Autonomous reconnaissance unit equipped with thermal optic arrays, perimeter patrolling AI, and real-time biometric threat detection.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">SURGICAL PRECISION</span>
+          <h3>SURGEON-BOT 9</h3>
+          <p>Sub-micron precision surgical assistant built for high-stress microsurgery, remote telemetry execution, and tremor compensation.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">HEAVY INDUSTRY</span>
+          <h3>TITAN-EXO Mech</h3>
+          <p>Industrial heavy-lift cybernetic exo-unit designed for deep-space material handling, orbital maintenance, and hazardous recovery missions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPATIAL AI SECTION -->
+  <section id="spatial">
+    <div class="section-header">
+      <h2 class="section-title">Spatial Neural Intelligence</h2>
+      <p class="section-subtitle">How Cybercore units sense, compute, and react to dynamic multi-dimensional surroundings in fractions of a millisecond.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div>
+          <span class="card-tag">SAFETY FRAMEWORK</span>
+          <h3>Hardware Fallback Layers</h3>
+          <p>Fail-safe motor killswitches and independent sensor checking loops ensure operational security in shared human-robot work zones.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">SIM-TO-REAL</span>
+          <h3>Synthetic Learning Pipeline</h3>
+          <p>Models are trained across billions of virtual scenario iterations before deployment, achieving immediate real-world adaptation stability.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <span class="card-tag">ENERGY EFFICIENCY</span>
+          <h3>Kinetic Energy Harvesting</h3>
+          <p>Smart joint braking systems recycle kinetic deceleration energy back into high-density lithium-graphene power banks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPLOYMENT & CONTACT SECTION -->
+  <section id="contact">
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <h3>Initiate Deployment Protocol</h3>
+        <p>Integrate Cybercore neural agents into your industrial workflow, research facility, or defense infrastructure.</p>
+        <p>Our autonomous units feature zero-trust encrypted API links, multi-platform telemetry tracking, and immediate field-readiness.</p>
+      </div>
+
+      <div class="contact-form">
+        <form onsubmit="event.preventDefault(); alert('Transmission Received! Cybercore Agent Initiated.');">
+          <input type="text" placeholder="Organization / Entity Name" required>
+          <input type="email" placeholder="Neural Link Communications (Email)" required>
+          <textarea rows="4" placeholder="Specify Mission Parameters & Operational Scope..." required></textarea>
+          <button type="submit">TRANSMIT DEPLOYMENT COMMAND</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 CYBERCORE Autonomous Systems. All Rights Reserved. Engineered for Precision.
+  </footer>
+
+</body>
+</html>
